@@ -1,0 +1,47 @@
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeParseException;
+import java.util.Scanner;
+
+public class TimeZoneConverter {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        try {
+            // Get source country and local time
+            System.out.println("Please Enter valid Timezone");
+            System.out.print("Enter source country: ");
+            String sourceCountry = scanner.nextLine();
+            System.out.print("Enter local time (hours): ");
+            int localHours = scanner.nextInt();
+            scanner.nextLine(); // consume newline character
+            System.out.print("Enter local time (minutes): ");
+            int localMinutes = scanner.nextInt();
+            scanner.nextLine(); // consume newline character
+            System.out.print("Enter local time (seconds): ");
+            int localSeconds = scanner.nextInt();
+            scanner.nextLine(); // consume newline character
+
+            // Get destination country
+            System.out.print("Enter destination country: ");
+            String destCountry = scanner.nextLine();
+
+            // Convert local time to destination time
+            LocalDateTime localDateTime = LocalDateTime.now().withHour(localHours).withMinute(localMinutes).withSecond(localSeconds).truncatedTo(java.time.temporal.ChronoUnit.SECONDS);
+
+            ZoneId sourceZoneId = ZoneId.of(sourceCountry);
+            ZoneId destZoneId = ZoneId.of(destCountry);
+
+            LocalDateTime destDateTime = localDateTime.atZone(sourceZoneId).withZoneSameInstant(destZoneId).toLocalDateTime();
+
+            // Print destination time
+            System.out.println("Destination time: " + destDateTime.toLocalTime());
+        } catch (DateTimeParseException e) {
+            System.out.println("Invalid input format. Please enter time in HH:MM:SS format.");
+        } catch (Exception e) {
+            System.out.println("An error occurred: " + e.getMessage());
+        } finally {
+            scanner.close();
+        }
+    }
+}
